@@ -16,15 +16,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
 
-#ifndef _SYSRENDER_H_
-#define _SYSRENDER_H_
+#ifndef _SYSAI_H_
+#define _SYSAI_H_
 
-void SysRenderInit();
-void SysRenderMap();
-void SysRenderText(u8 *string, u8 x, u8 y);
-void SysRenderMenu();
-void SysRenderScreen();
-void SysRenderBackground(TSprite *sprite);
-void SysRenderUpdate();
+void SysAIInit();
+void SysAIUpdate();
 
 #endif

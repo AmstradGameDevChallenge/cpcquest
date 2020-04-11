@@ -1,4 +1,4 @@
-// 30 horas 
+// 35 horas 
 
 //-----------------------------LICENSE NOTICE------------------------------------
 //  This file is part of CPC Quest
@@ -23,6 +23,7 @@
 #include "man/mansprite.h"
 #include "man/manmap.h"
 #include "sys/sysinput.h"
+#include "sys/sysai.h"
 #include "sys/sysrender.h"
 #include "sys/syscollision.h"
 #include "sys/sysphysics.h"
@@ -94,15 +95,21 @@ void main(void)
    cpct_akp_musicInit(music);
    cpct_setInterruptHandler(Interrupcion);  
 
-   ManSpriteCreate(PLAYER_SPRITE);
-   ManSpriteCreate(ENEMY01_SPRITE);
+   ManSpriteCreate(ID_PLAYER);
+   ManSpriteCreate(ID_ENEMY01);
+   ManSpriteCreate(ID_ENEMY02);
+   ManSpriteCreate(ID_ENEMY03);
+   ManSpriteCreate(ID_ENEMY04);
+   ManSpriteCreate(ID_ENEMY05);
+   ManSpriteCreate(ID_ENEMY06);
    ManMapCreate();   
          
-   SysRenderMap();      
+   SysRenderScreen();   
    
    while(1)
    {    
       SysInputUpdate();             
+      SysAIUpdate();  
       SysPhysicsUpdate();      
       SysCollisionUpdate();     
       SysRenderUpdate();

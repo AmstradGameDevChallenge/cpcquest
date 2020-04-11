@@ -44,25 +44,79 @@ void SysRenderInit()
 ////////////////////////////////////////////////////////////////////////////////
 void SysRenderMap()
 {      
-   const u8* map = ManMapGet();
+   const u8* map = ManMapGet();   
+   u8 a, b, k;
    
-   u8 i, j;
-   u8 x, y;
-
-   cpct_setPalette(blackpalette, 16);
-
-   for(i = 0; i < 20; i++)
-   {
-      x = i * TILES_00_W;
-      for(j = 0; j < 12; j++)
+   for (b = 0; b < 12; b++)
+   {      
+      u8* backscreenptr = VideoGetBackBufferPtr(0, b * TILES_00_H * 2);
+      k = b * 20;
+      
+      for (a = 0; a < 20; a++)
       {
-         y = j * TILES_00_H * 2;
-         DrawTileDoubleHeight(tileset[map[i + (j * 20)]], cpctm_screenPtr(CPCT_VMEM_START, x, y), TILES_00_W, TILES_00_H);
-         DrawTileDoubleHeight(tileset[map[i + (j * 20)]], cpctm_screenPtr(SCREEN_BUFF, x, y), TILES_00_W, TILES_00_H);
+         DrawTileDoubleHeight(tileset[map[a + k]], backscreenptr, TILES_00_W, TILES_00_H);
+         backscreenptr = backscreenptr + TILES_00_W;
       }
-   } 
+   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void SysRenderText(u8 *string, u8 x, u8 y)
+{
+   u8 i;
+   u8* backscreenptr;
+   u8* data;
+   u8 len = 40;
+   u8 text[40 + 1] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789   ";   
+
+   if (strlen(string) > 0)
+   {
+      strcpy(text, string);
+      len = strlen(text);
+   }
    
-   cpct_setPalette(palette, 16);
+   backscreenptr = VideoGetBackBufferPtr(x, y);
+
+   for(i = 0; i < len; i++)
+   {          
+      data = ManCharactersGet(text[i]);      
+               
+      DrawTileDoubleHeight(data, backscreenptr, FONT_00_W, FONT_00_H);
+      backscreenptr = backscreenptr + 2;
+   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void SysRenderMenu()
+{
+   SysRenderText("HERO PHASE", 52, 16);
+   SysRenderText("MOVE", 56, 32);
+   SysRenderText("ATTACK", 56, 48);
+
+   SysRenderText("EXPLORATION", 52, 64);
+   SysRenderText("NEW ROOM", 56, 80);
+   SysRenderText("NEW MONSTER", 56, 96);
+   
+   SysRenderText("ENEMY PHASE", 52, 112);
+   SysRenderText("ENCOUNTER", 56, 128);
+   SysRenderText("MONSTERS", 56, 144);   
+   SysRenderText("TRAPS", 56, 160);   
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void SysRenderScreen()
+{
+   cpct_setPalette(blackpalette, 16);
+      
+   SysRenderMap();
+   SysRenderMenu();   
+   VideoFlipBuffers(); 
+
+   SysRenderMap();
+   SysRenderMenu();   
+   VideoFlipBuffers(); 
+   
+   cpct_setPalette(palette, 16);   
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,32 +151,6 @@ void SysRenderBackground(TSprite* sprite)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void SysRenderText(u8 *string, u8 x, u8 y)
-{
-   u8 i;
-   u8* backscreenptr;
-   u8* data;
-   u8 len = 40;
-   u8 text[40 + 1] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789   ";   
-
-   if (strlen(string) > 0)
-   {
-      strcpy(text, string);
-      len = strlen(text);
-   }
-   
-   backscreenptr = VideoGetBackBufferPtr(x, y);
-
-   for(i = 0; i < len; i++)
-   {          
-      data = ManCharactersGet(text[i]);      
-               
-      DrawTileDoubleHeight(data, backscreenptr, FONT_00_W, FONT_00_H);
-      backscreenptr = backscreenptr + 2;
-   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void SysRenderUpdate()
 {
    char cadena[10] = "";
@@ -141,20 +169,14 @@ void SysRenderUpdate()
       DrawSpriteDoubleHeight(sprite->frame->img, backscreenptr, sprite->w, sprite->h, tablatrans);
    }
    
-   sprite = ManSpriteGet(PLAYER_SPRITE);
+   sprite = ManSpriteGet(ID_PLAYER);
    
    sprintf(cadena, "%03hd", sprite->x);
    SysRenderText(cadena, 0, 0);     
    sprintf(cadena, "%03hd", sprite->y);
-   SysRenderText(cadena, 0, 10);        
-   sprintf(cadena, "%03hd", sprite->px);
-   SysRenderText(cadena, 0, 20);     
-   sprintf(cadena, "%03hd", sprite->py);
-   SysRenderText(cadena, 0, 30);
-   strcpy(cadena, "HERO TURN");   
-   SysRenderText(cadena, 60, 40);  
-   strcpy(cadena, "");
-   SysRenderText(cadena, 0, 50);        
+   SysRenderText(cadena, 0, 10);                
+   sprintf(cadena, "%03hd", sprite->attack);
+   SysRenderText(cadena, 0, 30);                
    
    VideoFlipBuffers();
    

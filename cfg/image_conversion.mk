@@ -45,10 +45,13 @@ PALETTE=8 0 1 3 6 9 10 12 13 14 15 16 18 23 25 26
 $(eval $(call IMG2SP, SET_FOLDER      , src/img/           ))
 $(eval $(call IMG2SP, SET_PALETTE_FW  , $(PALETTE)         ))
 $(eval $(call IMG2SP, CONVERT         , assets/tiles.png, 8, 8, tiles, palette, tileset))
+$(eval $(call IMG2SP, CONVERT         , assets/warrior.png, 8, 8, warrior, , ))
 $(eval $(call IMG2SP, CONVERT         , assets/elf.png, 8, 8, elf, , ))
+$(eval $(call IMG2SP, CONVERT         , assets/wizard.png, 8, 8, wizard, , ))
 $(eval $(call IMG2SP, CONVERT         , assets/dwarf.png, 8, 8, dwarf, , ))
 $(eval $(call IMG2SP, CONVERT         , assets/serpent.png, 8, 8, serpent, , ))
 $(eval $(call IMG2SP, CONVERT         , assets/skaven.png, 8, 8, skaven, , ))
+$(eval $(call IMG2SP, CONVERT         , assets/spider.png, 8, 8, spider, , ))
 $(eval $(call IMG2SP, CONVERT         , assets/font.png, 4, 5, font, , ))
 
 ##

@@ -21,39 +21,28 @@
 #include "man/mansprite.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-void SysInputInit()
+void SysAIInit()
 {      
    ;   
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void SysInputUpdate()
-{
-   TSprite *sprite = ManSpriteGet(ID_PLAYER);
-   static const cpct_keyID keys[10] = {
-      Key_CursorUp, Joy0_Up,
-      Key_CursorDown, Joy0_Down,
-      Key_CursorLeft, Joy0_Left,
-      Key_CursorRight, Joy0_Right,
-      Key_Z, Joy0_Fire1 
-      };
-   i8 k = -1;              
+void SysAIUpdate()
+{   
    u8 i;
+   u8 r;
+   TSprite *sprite;
+   u8 num = ManSpriteGetNumSprites();
 
-   if (sprite->move == 0)
-   {
-      if (cpct_isAnyKeyPressed())
+   for (i = ID_ENEMY01; i < num; i++)
+   {                 
+      sprite = ManSpriteGet(i);   
+      
+      if (sprite->move == 0)
       {
-         for(i = 0; i < 10; i++)
-         {
-            if (cpct_isKeyPressed(keys[i]))
-            {
-               k = i;
-               break;
-            }
-         }
+         r = cpct_rand() & 7;
          
-         switch(k)
+         switch(r)
          {
             case 0:
             case 1:
@@ -71,13 +60,9 @@ void SysInputUpdate()
             case 7:
                sprite->move = 14;
             break;
-            case 8:
-            case 9:
-               sprite->attack = cpct_rand() & 7;               
-            break; 
             default:
             break;     
-         }      
-      }    
-   }         
+         }           
+      }
+   }              
 }

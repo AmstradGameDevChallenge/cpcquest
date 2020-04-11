@@ -21,8 +21,13 @@
 
 #include "cmp/tsprite.h"
 
-#define PLAYER_SPRITE 0
-#define ENEMY01_SPRITE 1
+#define ID_PLAYER 0
+#define ID_ENEMY01 1
+#define ID_ENEMY02 2
+#define ID_ENEMY03 3
+#define ID_ENEMY04 4
+#define ID_ENEMY05 5
+#define ID_ENEMY06 6
 
 void ManSpriteInit();
 void ManSpriteCreate(u8 num);
