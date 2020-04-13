@@ -17,8 +17,8 @@
 //------------------------------------------------------------------------------
 
 #include <cpctelera.h>
-#include "cmp/tsprite.h"
 #include "man/mansprite.h"
+#include "man/manturn.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 void SysInputInit()
@@ -28,56 +28,66 @@ void SysInputInit()
 
 ////////////////////////////////////////////////////////////////////////////////
 void SysInputUpdate()
-{
-   TSprite *sprite = ManSpriteGet(ID_PLAYER);
-   static const cpct_keyID keys[10] = {
-      Key_CursorUp, Joy0_Up,
-      Key_CursorDown, Joy0_Down,
-      Key_CursorLeft, Joy0_Left,
-      Key_CursorRight, Joy0_Right,
-      Key_Z, Joy0_Fire1 
-      };
-   i8 k = -1;              
-   u8 i;
-
-   if (sprite->move == 0)
-   {
-      if (cpct_isAnyKeyPressed())
+{   
+   TTurn* turn = ManTurnGet();      
+      
+   if (turn->currentid == ID_PLAYER)
+   {      
+      TSprite *sprite = ManSpriteGet(turn->currentid);
+   
+      if (turn->action == ST_move && turn->stepmove == 0)
       {
-         for(i = 0; i < 10; i++)
+         static const cpct_keyID keys[10] = 
          {
-            if (cpct_isKeyPressed(keys[i]))
-            {
-               k = i;
-               break;
-            }
-         }
+            Key_CursorUp, Joy0_Up,
+            Key_CursorDown, Joy0_Down,
+            Key_CursorLeft, Joy0_Left,
+            Key_CursorRight, Joy0_Right,
+            Key_Z, Joy0_Fire1 
+         };
+         i8 k = -1;              
+         u8 i;         
          
-         switch(k)
-         {
-            case 0:
-            case 1:
-               sprite->move = -4;
-            break;      
-            case 2:
-            case 3:
-               sprite->move = 4;
-            break;
-            case 4:
-            case 5:
-               sprite->move = -14;
-            break;
-            case 6:
-            case 7:
-               sprite->move = 14;
-            break;
-            case 8:
-            case 9:
-               sprite->attack = cpct_rand() & 7;               
-            break; 
-            default:
-            break;     
-         }      
-      }    
-   }         
+         //while (k == -1)
+         {     
+            if (cpct_isAnyKeyPressed())
+            {
+               for(i = 0; i < 10; i++)
+               {
+                  if (cpct_isKeyPressed(keys[i]))
+                  {
+                     k = i;
+                     break;
+                  }
+               }
+                                                                          
+               switch(k)
+               {
+                  case 0:
+                  case 1:
+                     turn->dirmove = 1;
+                  break;      
+                  case 2:
+                  case 3:
+                     turn->dirmove = 2;
+                  break;
+                  case 4:
+                  case 5:
+                     turn->dirmove = 3;
+                  break;
+                  case 6:
+                  case 7:
+                     turn->dirmove = 4;
+                  break;
+                  case 8:
+                  case 9:                                             
+                     turn->action = ST_attack;
+                  break; 
+                  default:
+                  break;     
+               }    
+            }   
+         }         
+      }       
+   }        
 }

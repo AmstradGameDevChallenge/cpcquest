@@ -16,12 +16,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
 
-#ifndef _MANMAP_H_
-#define _MANMAP_H_
+#ifndef _SYSSEQUENCE_H_
+#define _SYSSEQUENCE_H_
 
-void ManMapInit();
-void ManMapCreate();
-const u8* ManMapGet();
-u8 ManMapGetNumMaps();
+void SysSequenceInit();
+void SysSequenceUpdate();
 
 #endif

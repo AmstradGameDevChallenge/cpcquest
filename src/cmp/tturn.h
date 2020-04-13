@@ -16,12 +16,17 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
 
-#ifndef _MANMAP_H_
-#define _MANMAP_H_
+#ifndef _TTURN_H_
+#define _TTURN_H_
 
-void ManMapInit();
-void ManMapCreate();
-const u8* ManMapGet();
-u8 ManMapGetNumMaps();
+typedef struct
+{
+   u8 currentid;
+   u8 action;
+   u8 currentmove;
+   u8 dirmove;
+   u8 stepmove;  
+   u8 trymove; 
+} TTurn;
 
 #endif

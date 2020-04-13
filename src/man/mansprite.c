@@ -78,7 +78,7 @@ TSprite sprites[MAX_SPRITES];
 ////////////////////////////////////////////////////////////////////////////////
 void ManSpriteInit()
 {
-   numsprites = 0;
+   numsprites = 0;   
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -88,9 +88,11 @@ void ManSpriteCreate(u8 num)
    
    s->w = 4;
    s->h = 8;   
-   s->move = 0;     
+      
+   s->move = 4;   
+         
    s->attack = 0;  
-   s->nframe = 0;      
+   s->nframe = 0;  
    
    switch (num)
    {
@@ -156,7 +158,7 @@ TSprite* ManSpriteGet(u8 num)
 ////////////////////////////////////////////////////////////////////////////////   
 void ManSpriteSetNextFrame(u8 num)
 {
-   TSprite *s = ManSpriteGet(num);     
+   TSprite *s = &sprites[num];
    
    s->nframe++;  
 

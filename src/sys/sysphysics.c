@@ -17,8 +17,8 @@
 //------------------------------------------------------------------------------
 
 #include <cpctelera.h>
-#include "cmp/tsprite.h"
 #include "man/mansprite.h"
+#include "man/manturn.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 void SysPhysicsInit()
@@ -28,35 +28,28 @@ void SysPhysicsInit()
 
 ////////////////////////////////////////////////////////////////////////////////
 void SysPhysicsUpdate()
-{   
-   u8 i;
-   i8 mx, my;
-   TSprite *sprite;
-   u8 num = ManSpriteGetNumSprites();
-
-   for (i = 0; i < num; i++)
-   {     
-      mx = my = 0;       
-      sprite = ManSpriteGet(i);   
+{      
+   i8 mx = 0;
+   i8 my = 0;   
+   TTurn* turn = ManTurnGet();   
+   TSprite *sprite = ManSpriteGet(turn->currentid);
       
-      if (sprite->move > 10)
+   if (turn->action == ST_move)
+   {            
+      if (turn->dirmove == 4)
       {
-         sprite->move--;
          mx = 1;
       }
-      else if (sprite->move < -10)
+      else if (turn->dirmove == 3)
       {
-         sprite->move++;
          mx = -1;         
       }
-      else if (sprite->move > 0)
+      else if (turn->dirmove == 2)
       {
-         sprite->move--;
          my = 4;         
       }
-      else if (sprite->move < 0)
+      else if (turn->dirmove == 1)
       {
-         sprite->move++;
          my = -4;         
       }
       
@@ -65,12 +58,29 @@ void SysPhysicsUpdate()
       
       if (mx != 0 || my != 0)
       {
-         ManSpriteSetNextFrame(i);
-      }
-      
-      if (sprite->move == 10 || sprite->move == -10)
-      {
-         sprite->move = 0;
-      }
-   }              
+         ManSpriteSetNextFrame(turn->currentid);         
+         turn->stepmove++;
+         
+         if (turn->stepmove == 4)
+         {
+            turn->stepmove = 0;
+            turn->dirmove = 0;
+            turn->currentmove++;
+            
+            if (turn->currentmove == sprite->move)
+            {               
+               turn->action = ST_attack;               
+            }
+         }      
+      }      
+   } 
+   else if (turn->action == ST_attack)
+   {
+      sprite->attack = cpct_rand() & 7;
+      turn->action = ST_iddle;           
+   }  
+   else
+   {
+      ;
+   }   
 }

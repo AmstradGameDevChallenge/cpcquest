@@ -16,12 +16,22 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
 
-#ifndef _MANMAP_H_
-#define _MANMAP_H_
+#include <cpctelera.h>
+#include "man/manturn.h"
 
-void ManMapInit();
-void ManMapCreate();
-const u8* ManMapGet();
-u8 ManMapGetNumMaps();
+////////////////////////////////////////////////////////////////////////////////
+void SysSequenceInit()
+{      
+   ; 
+}
 
-#endif
+////////////////////////////////////////////////////////////////////////////////
+void SysSequenceUpdate()
+{      
+   TTurn* turn = ManTurnGet();    
+   
+   if (turn->action == ST_iddle)
+   {
+      ManTurnSetNext();         
+   }  
+}

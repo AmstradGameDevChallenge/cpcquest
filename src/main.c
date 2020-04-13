@@ -1,4 +1,4 @@
-// 35 horas 
+// 35 horas
 
 //-----------------------------LICENSE NOTICE------------------------------------
 //  This file is part of CPC Quest
@@ -21,12 +21,14 @@
 #include <cpctelera.h>
 #include "video/video.h"
 #include "man/mansprite.h"
+#include "man/manturn.h"
 #include "man/manmap.h"
 #include "sys/sysinput.h"
 #include "sys/sysai.h"
-#include "sys/sysrender.h"
-#include "sys/syscollision.h"
 #include "sys/sysphysics.h"
+#include "sys/syscollision.h"
+#include "sys/sysrender.h"
+#include "sys/syssequence.h"
 
 __at(0x200) const unsigned char music[1147];
 
@@ -54,7 +56,7 @@ void PlayMusic()
 void Interrupcion()
 {
    static u8 i;
-   
+
    i++;
 
    if (i == 6)
@@ -62,7 +64,7 @@ void Interrupcion()
       PlayMusic();
       cpct_scanKeyboard_if();
       i = 0;
-   }      
+   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,26 +76,27 @@ void Retardo(u8 val)
    for(a = 0; a < val; a++)
    {
       for(b = 0; b < val; b++)
-      {      
+      {
          resul++;
       }
    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void main(void) 
+void main(void)
 {
    cpct_setStackLocation((u8*)NEW_STACK_LOCATION);
-   cpct_disableFirmware();      
+   cpct_disableFirmware();
    SysRenderInit();
    //SysInputInit();
    //SysPhysicsInit();
    //SysCollisionInit();
    ManSpriteInit();
-   ManMapInit();
+   ManTurnInit();
+   ManMapInit();   
 
    cpct_akp_musicInit(music);
-   cpct_setInterruptHandler(Interrupcion);  
+   cpct_setInterruptHandler(Interrupcion);
 
    ManSpriteCreate(ID_PLAYER);
    ManSpriteCreate(ID_ENEMY01);
@@ -102,17 +105,19 @@ void main(void)
    ManSpriteCreate(ID_ENEMY04);
    ManSpriteCreate(ID_ENEMY05);
    ManSpriteCreate(ID_ENEMY06);
-   ManMapCreate();   
-         
-   SysRenderScreen();   
-   
+   ManTurnCreate();
+   ManMapCreate();      
+
+   SysRenderScreen();  
+
    while(1)
-   {    
-      SysInputUpdate();             
-      SysAIUpdate();  
+   {      
+      SysInputUpdate();
+      SysAIUpdate(); 
       SysPhysicsUpdate();      
-      SysCollisionUpdate();     
+      SysCollisionUpdate();              
       SysRenderUpdate();
+      SysSequenceUpdate();
       
       //Retardo(200);
    }

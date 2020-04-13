@@ -17,8 +17,8 @@
 //------------------------------------------------------------------------------
 
 #include <cpctelera.h>
-#include "cmp/tsprite.h"
 #include "man/mansprite.h"
+#include "man/manturn.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 void SysAIInit()
@@ -28,41 +28,69 @@ void SysAIInit()
 
 ////////////////////////////////////////////////////////////////////////////////
 void SysAIUpdate()
-{   
-   u8 i;
-   u8 r;
-   TSprite *sprite;
-   u8 num = ManSpriteGetNumSprites();
-
-   for (i = ID_ENEMY01; i < num; i++)
-   {                 
-      sprite = ManSpriteGet(i);   
+{         
+   TTurn* turn = ManTurnGet();
+   
+   if (turn->currentid != ID_PLAYER)
+   {
+      TSprite *enemy = ManSpriteGet(turn->currentid);    
+      TSprite *player = ManSpriteGet(ID_PLAYER);    
       
-      if (sprite->move == 0)
-      {
-         r = cpct_rand() & 7;
-         
-         switch(r)
+      if (turn->action == ST_move)
+      {                                           
+         if (turn->currentmove < enemy->move)
+         {                             
+            if (turn->stepmove == 0)
+            {  
+               u8 movement[4] = { 0, 0, 0, 0 };               
+               u8 num = 0;
+               u8 i;
+               
+               if (player->y < enemy->y) movement[0] = 1;
+               if (player->y > enemy->y) movement[1] = 1;
+               if (player->x < enemy->x) movement[2] = 1;
+               if (player->x > enemy->x) movement[3] = 1;
+               
+               for (i = 0; i < 4; i++)
+               {
+                  if (movement[i] == 1)
+                  {
+                     if (num == turn->trymove)
+                     {
+                        break;
+                     } 
+                     num++;
+                  }                  
+               }
+               
+               switch (i)
+               {
+                  case 0:
+                     turn->dirmove = 1;
+                  break;
+                  case 1:
+                     turn->dirmove = 2;
+                  break;
+                  case 2:
+                     turn->dirmove = 3;
+                  break;
+                  case 3:
+                     turn->dirmove = 4;
+                  break;                                    
+                  default:
+                     turn->action = ST_attack;
+                  break;                  
+               }
+            }
+         }    
+         else
          {
-            case 0:
-            case 1:
-               sprite->move = -4;
-            break;      
-            case 2:
-            case 3:
-               sprite->move = 4;
-            break;
-            case 4:
-            case 5:
-               sprite->move = -14;
-            break;
-            case 6:
-            case 7:
-               sprite->move = 14;
-            break;
-            default:
-            break;     
-         }           
-      }
-   }              
+            turn->action = ST_attack;
+         }                   
+      }  
+      else
+      {
+         turn->action = ST_iddle;
+      }             
+   }     
 }

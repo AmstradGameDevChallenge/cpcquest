@@ -26,11 +26,14 @@ typedef struct
    u8 x, y;
    u8 px, py;
    u8 w, h;
-   i8 move;   
+  
+   u8 move;
+      
    u8 energy;
    u8 attack;
    u8 deffense;
    u8 force;  
+   
    u8 nframe; 
    TFrame* frame;
 } TSprite;

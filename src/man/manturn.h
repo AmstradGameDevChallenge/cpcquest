@@ -16,12 +16,20 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
 
-#ifndef _MANMAP_H_
-#define _MANMAP_H_
+#ifndef _MANTURN_H_
+#define _MANTURN_H_
 
-void ManMapInit();
-void ManMapCreate();
-const u8* ManMapGet();
-u8 ManMapGetNumMaps();
+#include "cmp/tturn.h"
+
+typedef enum {
+      ST_move = 0
+   ,  ST_attack
+   ,  ST_iddle
+} EStatus;
+
+void ManTurnInit();
+void ManTurnCreate();
+TTurn* ManTurnGet();
+void ManTurnSetNext();
 
 #endif

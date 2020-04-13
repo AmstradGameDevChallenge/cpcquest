@@ -17,9 +17,9 @@
 //------------------------------------------------------------------------------
 
 #include <cpctelera.h>
-#include "cmp/tsprite.h"
 #include "man/mansprite.h"
 #include "man/manmap.h"
+#include "man/manturn.h"
 #include "img/tiles.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,36 +31,36 @@ void SysCollisionInit()
 ////////////////////////////////////////////////////////////////////////////////
 void SysCollisionUpdate()
 {
-   u8 i;
-   u8 x, y;
-   TSprite* sprite;      
-   u8 num = ManSpriteGetNumSprites();
-   
-   for (i = 0; i < num; i++)
-   {
-      sprite = ManSpriteGet(i);
+   u8 x, y;      
+   TTurn* turn = ManTurnGet();   
+   TSprite* sprite = ManSpriteGet(turn->currentid);
+  
+   if (turn->action == ST_move && turn->stepmove == 1)
+   {  
       x = sprite->x;
       y = sprite->y;
    
-      if (sprite->move == 13)
+      if (turn->dirmove == 4)
       {
          x = sprite->x + 3;
       }     
-      else if (sprite->move == -13)
+      else if (turn->dirmove == 3)
       {
          x = sprite->x - 3;
       }         
-      else if (sprite->move == 3)
+      else if (turn->dirmove == 2)
       {
          y = sprite->y + 12;
       }    
-      else if (sprite->move == -3)
+      else if (turn->dirmove == 1)
       {
          y = sprite->y - 12;
       }    
       
       if (x != sprite->x || y != sprite->y)
       {   
+         // check collision
+         
          u8 col = 0;       
          TSprite* enemy;
          u8 j;
@@ -70,7 +70,7 @@ void SysCollisionUpdate()
          {   
             // enemy collision
                      
-            if (i != j)
+            if (turn->currentid != j)
             {
                enemy = ManSpriteGet(j);
                
@@ -93,8 +93,8 @@ void SysCollisionUpdate()
             }            
             else
             {
-               if ((sprite->py == 0 && sprite->move == -3) 
-                  || (sprite->py == 160 && sprite->move == 3))
+               if ((sprite->py == 0 && turn->dirmove == 1) 
+                  || (sprite->py == 160 && turn->dirmove == 2))
                {
                   col = 1;
                }
@@ -105,8 +105,19 @@ void SysCollisionUpdate()
          {
             sprite->x = sprite->px;
             sprite->y = sprite->py;
-            sprite->move = 0;            
-            ManSpriteSetNextFrame(i);
+            if (turn->stepmove == 0)
+            {
+               turn->stepmove = 3;        
+               turn->currentmove--;                              
+            }
+            else
+            {
+               turn->stepmove--;            
+            }            
+            turn->action = ST_move;
+            turn->dirmove = 0;                        
+            turn->trymove++;
+            ManSpriteSetNextFrame(turn->currentid);
          }
       }     
    }         

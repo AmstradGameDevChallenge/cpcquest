@@ -17,39 +17,50 @@
 //------------------------------------------------------------------------------
 
 #include <cpctelera.h>
-#include "maps/map1.h"
-#include "maps/map2.h"
+#include "cmp/tturn.h"
+#include "man/manturn.h"
+#include "man/mansprite.h"
 
-#define MAX_MAPS 2
-u8* const maps[MAX_MAPS] = {
-   {map1_end},
-   {map2_end}
-}; 
-
-u8 map[20*12];
-
-u8 currentmap;
+TTurn turn;
 
 ////////////////////////////////////////////////////////////////////////////////
-void ManMapInit()
+void ManTurnInit()
 {
-   currentmap = 0;
+   ;         
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ManMapCreate()
-{   
-   cpct_zx7b_decrunch_s(map + map1_size - 1, maps[currentmap]);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const u8* ManMapGet()
+void ManTurnCreate()
 {
-   return map;
+   TTurn *t = &turn;
+   
+   t->currentid = 0;
+   t->action = ST_move;
+   t->currentmove = 0;
+   t->dirmove = 0;
+   t->stepmove = 0;
+   t->trymove = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-u8 ManMapGetNumMaps()
+TTurn* ManTurnGet()
 {
-   return MAX_MAPS;
-}
+   return &turn;
+}  
+
+////////////////////////////////////////////////////////////////////////////////
+void ManTurnSetNext()
+{
+   TTurn *t = &turn;
+    
+   t->currentid++;   
+   if (t->currentid >= ManSpriteGetNumSprites())
+   {
+      t->currentid = 0;        
+   }   
+   t->action = ST_move;
+   t->currentmove = 0;
+   t->dirmove = 0;
+   t->stepmove = 0;   
+   t->trymove = 0; 
+} 

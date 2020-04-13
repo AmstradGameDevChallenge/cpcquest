@@ -24,6 +24,7 @@
 #include "man/manmap.h"
 #include "man/mansprite.h"
 #include "man/mancharacters.h"
+#include "man/manturn.h"
 #include "img/tiles.h"
 #include "img/font.h"
 #include "maps/map1.h"
@@ -153,17 +154,18 @@ void SysRenderBackground(TSprite* sprite)
 ////////////////////////////////////////////////////////////////////////////////
 void SysRenderUpdate()
 {
-   char cadena[10] = "";
+   char cadena[20] = "";
    u8 i;
    u8* backscreenptr;      
-   TSprite *sprite;
+   TSprite* sprite;
+   TTurn* turn = ManTurnGet(); 
    u8 num = ManSpriteGetNumSprites();
    
    // draw sprites
    
    for (i = 0; i < num; i++)
    {
-      sprite = ManSpriteGet(i);
+      sprite = ManSpriteGet(i); 
             
       backscreenptr = VideoGetBackBufferPtr(sprite->x, sprite->y);         
       DrawSpriteDoubleHeight(sprite->frame->img, backscreenptr, sprite->w, sprite->h, tablatrans);
@@ -176,7 +178,18 @@ void SysRenderUpdate()
    sprintf(cadena, "%03hd", sprite->y);
    SysRenderText(cadena, 0, 10);                
    sprintf(cadena, "%03hd", sprite->attack);
-   SysRenderText(cadena, 0, 30);                
+   SysRenderText(cadena, 0, 30);            
+   /*sprintf(cadena, "ACTION %02hd", sprite->action);
+   SysRenderText(cadena, 0, 50);    
+   sprintf(cadena, "STEP %02hd", sprite->stepmov);
+   SysRenderText(cadena, 0, 60);        
+   sprintf(cadena, "DIR %02hd", sprite->dirmov);
+   SysRenderText(cadena, 0, 70);           
+   sprintf(cadena, "SPRITE %02hd", ManSpriteGet(SysSequenceGet()));
+   SysRenderText(cadena, 0, 80);         */
+
+   sprintf(cadena, "%02hd", sprite->move - turn->currentmove);
+   SysRenderText(cadena, 72, 32);      
    
    VideoFlipBuffers();
    
@@ -186,5 +199,5 @@ void SysRenderUpdate()
    {
       sprite = ManSpriteGet(i);
       SysRenderBackground(sprite);      
-   }  
+   }       
 }
